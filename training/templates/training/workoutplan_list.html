@@ -1,0 +1,57 @@
+{% extends "training/base.html" %}
+
+{% block title %}Workout Plans - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Workout Plans List</h1>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text"
+                   name="title"
+                   class="form-control"
+                   placeholder="Search by title"
+                   value="{{ request.GET.title }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+{% if workoutplan_list %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Athlete</th>
+            <th>Trainer</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plan in workoutplan_list %}
+        <tr>
+            <td>
+    <a href="{% url 'training:workout-plan-detail' pk=plan.pk %}">
+        {{ plan.title }}
+    </a>
+</td>
+            <td>{{ plan.athlete }}</td>
+            <td>{{ plan.trainer.username }}</td>
+            <td>{{ plan.start_date }}</td>
+            <td>{{ plan.end_date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "includes/pagination.html" with page_obj=page_obj %}
+
+{% else %}
+<p>No workout plans found.</p>
+{% endif %}
+
+{% endblock %}

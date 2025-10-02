@@ -1,0 +1,73 @@
+{% extends "training/base.html" %}
+
+{% block title %}{{ athlete.first_name }} {{ athlete.last_name }} - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Athlete: {{ athlete.first_name }} {{ athlete.last_name }}</h1>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Email:</strong> {{ athlete.email }}</p>
+        <p><strong>Date of Birth:</strong> {{ athlete.date_of_birth }}</p>
+        <p><strong>Trainer:</strong>
+            <a href="{% url 'training:trainer-detail' pk=athlete.trainer.pk %}">
+                {{ athlete.trainer.username }}
+            </a>
+        </p>
+    </div>
+</div>
+
+<h3 class="mt-4">Workout Plans ({{ athlete.workout_plans.count }})</h3>
+{% if athlete.workout_plans.all %}
+<ul class="list-group">
+    {% for plan in athlete.workout_plans.all %}
+    <li class="list-group-item">
+        <a href="{% url 'training:workout-plan-detail' pk=plan.pk %}">
+            {{ plan.title }}
+        </a>
+        - {{ plan.start_date }} to {{ plan.end_date }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No workout plans yet.</p>
+{% endif %}
+
+<h3 class="mt-4">Workouts ({{ athlete.workouts.count }})</h3>
+{% if athlete.workouts.all %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Completed</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for workout in athlete.workouts.all %}
+        <tr>
+            <td>
+                <a href="{% url 'training:workout-detail' pk=workout.pk %}">
+                    {{ workout.date }}
+                </a>
+            </td>
+            <td>{{ workout.duration_minutes }} min</td>
+            <td>
+                {% if workout.completed %}
+                    <span class="badge bg-success">Yes</span>
+                {% else %}
+                    <span class="badge bg-warning">No</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No workouts yet.</p>
+{% endif %}
+
+<a href="{% url 'training:athlete-list' %}" class="btn btn-secondary mt-3">
+    Back to list
+</a>
+{% endblock %}

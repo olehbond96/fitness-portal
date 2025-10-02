@@ -1,0 +1,55 @@
+{% extends "training/base.html" %}
+
+{% block title %}Athletes - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Athletes List</h1>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   placeholder="Search by name"
+                   value="{{ request.GET.name }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+{% if athlete_list %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date of Birth</th>
+            <th>Trainer</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for athlete in athlete_list %}
+          <td>
+    <a href="{% url 'training:athlete-detail' pk=athlete.pk %}">
+        {{ athlete.first_name }} {{ athlete.last_name }}
+    </a>
+</td>
+        <tr>
+            <td>{{ athlete.email }}</td>
+            <td>{{ athlete.date_of_birth }}</td>
+            <td>{{ athlete.trainer.username }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "includes/pagination.html" with page_obj=page_obj %}
+
+{% else %}
+<p>No athletes found.</p>
+{% endif %}
+
+{% endblock %}

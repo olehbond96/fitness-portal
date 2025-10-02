@@ -1,0 +1,63 @@
+{% extends "training/base.html" %}
+
+{% block title %}Workouts - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Workouts List</h1>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text"
+                   name="athlete"
+                   class="form-control"
+                   placeholder="Search by athlete name"
+                   value="{{ request.GET.athlete }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+{% if workout_list %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Athlete</th>
+            <th>Duration (min)</th>
+            <th>Completed</th>
+            <th>Plan</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for workout in workout_list %}
+        <tr>
+            <td>
+    <a href="{% url 'training:workout-detail' pk=workout.pk %}">
+        {{ workout.date }}
+    </a>
+</td>
+            <td>{{ workout.athlete }}</td>
+            <td>{{ workout.duration_minutes }}</td>
+            <td>
+                {% if workout.completed %}
+                    <span class="badge bg-success">Yes</span>
+                {% else %}
+                    <span class="badge bg-warning">No</span>
+                {% endif %}
+            </td>
+            <td>{{ workout.workout_plan.title|default:"No plan" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "includes/pagination.html" with page_obj=page_obj %}
+
+{% else %}
+<p>No workouts found.</p>
+{% endif %}
+
+{% endblock %}

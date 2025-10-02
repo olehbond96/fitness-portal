@@ -1,0 +1,55 @@
+{% extends "training/base.html" %}
+
+{% block title %}Trainers - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Trainers List</h1>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text"
+                   name="username"
+                   class="form-control"
+                   placeholder="Search by username"
+                   value="{{ request.GET.username }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+{% if trainer_list %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Specialization</th>
+            <th>Experience (years)</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trainer in trainer_list %}
+        <tr>
+            <td>
+                <a href="{% url 'training:trainer-detail' pk=trainer.pk %}">
+                    {{ trainer.username }}
+                </a>
+            </td>
+            <td>{{ trainer.specialization }}</td>
+            <td>{{ trainer.years_experience }}</td>
+            <td>{{ trainer.phone_number|default:"N/A" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "includes/pagination.html" with page_obj=page_obj %}
+
+{% else %}
+<p>No trainers found.</p>
+{% endif %}
+
+{% endblock %}
