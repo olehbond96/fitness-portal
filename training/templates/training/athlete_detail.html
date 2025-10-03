@@ -67,7 +67,15 @@
 <p>No workouts yet.</p>
 {% endif %}
 
-<a href="{% url 'training:athlete-list' %}" class="btn btn-secondary mt-3">
-    Back to list
-</a>
+<div class="mt-3">
+    <a href="{% url 'training:athlete-update' pk=athlete.pk %}" class="btn btn-warning">
+        Update
+    </a>
+    <a href="{% url 'training:athlete-delete' pk=athlete.pk %}" class="btn btn-danger">
+        Delete
+    </a>
+    <a href="{% url 'training:athlete-list' %}" class="btn btn-secondary">
+        Back to list
+    </a>
+</div>
 {% endblock %}

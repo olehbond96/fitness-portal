@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from .models import Trainer, Athlete, WorkoutPlan, Workout
 from django.views import generic
+from django.urls import reverse_lazy
+from .models import Trainer, Athlete, WorkoutPlan, Workout
+from .forms import AthleteForm, WorkoutPlanForm, WorkoutForm
+
 
 def index(request):
     num_trainers = Trainer.objects.all().count()
@@ -90,3 +93,53 @@ class WorkoutPlanListView(generic.ListView):
             queryset = queryset.filter(title__icontains=title)
         return queryset
 
+
+class AthleteCreateView(generic.CreateView):
+    model = Athlete
+    form_class = AthleteForm
+    success_url = reverse_lazy("training:athlete-list")
+
+
+class WorkoutPlanCreateView(generic.CreateView):
+    model = WorkoutPlan
+    form_class = WorkoutPlanForm
+    success_url = reverse_lazy("training:workout-plan-list")
+
+
+class WorkoutCreateView(generic.CreateView):
+    model = Workout
+    form_class = WorkoutForm
+    success_url = reverse_lazy("training:workout-list")
+
+
+class AthleteUpdateView(generic.UpdateView):
+    model = Athlete
+    form_class = AthleteForm
+    success_url = reverse_lazy("training:athlete-list")
+
+
+class AthleteDeleteView(generic.DeleteView):
+    model = Athlete
+    success_url = reverse_lazy("training:athlete-list")
+
+
+class WorkoutPlanUpdateView(generic.UpdateView):
+    model = WorkoutPlan
+    form_class = WorkoutPlanForm
+    success_url = reverse_lazy("training:workout-plan-list")
+
+
+class WorkoutPlanDeleteView(generic.DeleteView):
+    model = WorkoutPlan
+    success_url = reverse_lazy("training:workout-plan-list")
+
+
+class WorkoutUpdateView(generic.UpdateView):
+    model = Workout
+    form_class = WorkoutForm
+    success_url = reverse_lazy("training:workout-list")
+
+
+class WorkoutDeleteView(generic.DeleteView):
+    model = Workout
+    success_url = reverse_lazy("training:workout-list")

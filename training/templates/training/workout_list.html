@@ -3,7 +3,12 @@
 {% block title %}Workouts - Fitness Portal{% endblock %}
 
 {% block content %}
-<h1>Workouts List</h1>
+<h1>
+    Workouts List
+    <a href="{% url 'training:workout-create' %}" class="btn btn-primary">
+        Create Workout
+    </a>
+</h1>
 
 <form method="get" class="mb-3">
     <div class="row">
