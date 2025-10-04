@@ -3,8 +3,14 @@ from django.views import generic
 from django.urls import reverse_lazy
 from .models import Trainer, Athlete, WorkoutPlan, Workout
 from .forms import AthleteForm, WorkoutPlanForm, WorkoutForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
+@login_required
 def index(request):
     num_trainers = Trainer.objects.all().count()
     num_athletes = Athlete.objects.all().count()
@@ -21,7 +27,7 @@ def index(request):
     return render(request, "training/index.html", context)
 
 
-class TrainerListView(generic.ListView):
+class TrainerListView(LoginRequiredMixin, generic.ListView):
     model = Trainer
     paginate_by = 5
 
@@ -33,7 +39,7 @@ class TrainerListView(generic.ListView):
         return queryset
 
 
-class AthleteListView(generic.ListView):
+class AthleteListView(LoginRequiredMixin, generic.ListView):
     model = Athlete
     paginate_by = 10
 
@@ -49,22 +55,22 @@ class AthleteListView(generic.ListView):
         return queryset
 
 
-class TrainerDetailView(generic.DetailView):
+class TrainerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Trainer
 
 
-class AthleteDetailView(generic.DetailView):
+class AthleteDetailView(LoginRequiredMixin, generic.DetailView):
     model = Athlete
 
 
-class WorkoutDetailView(generic.DetailView):
+class WorkoutDetailView(LoginRequiredMixin, generic.DetailView):
     model = Workout
 
 
-class WorkoutPlanDetailView(generic.DetailView):
+class WorkoutPlanDetailView(LoginRequiredMixin, generic.DetailView):
     model = WorkoutPlan
 
-class WorkoutListView(generic.ListView):
+class WorkoutListView(LoginRequiredMixin, generic.ListView):
     model = Workout
     paginate_by = 10
 
@@ -79,7 +85,7 @@ class WorkoutListView(generic.ListView):
         return queryset
 
 
-class WorkoutPlanListView(generic.ListView):
+class WorkoutPlanListView(LoginRequiredMixin, generic.ListView):
     model = WorkoutPlan
     paginate_by = 10
 
@@ -94,52 +100,68 @@ class WorkoutPlanListView(generic.ListView):
         return queryset
 
 
-class AthleteCreateView(generic.CreateView):
+class AthleteCreateView(LoginRequiredMixin, generic.CreateView):
     model = Athlete
     form_class = AthleteForm
     success_url = reverse_lazy("training:athlete-list")
 
 
-class WorkoutPlanCreateView(generic.CreateView):
+class WorkoutPlanCreateView(LoginRequiredMixin, generic.CreateView):
     model = WorkoutPlan
     form_class = WorkoutPlanForm
     success_url = reverse_lazy("training:workout-plan-list")
 
 
-class WorkoutCreateView(generic.CreateView):
+class WorkoutCreateView(LoginRequiredMixin, generic.CreateView):
     model = Workout
     form_class = WorkoutForm
     success_url = reverse_lazy("training:workout-list")
 
 
-class AthleteUpdateView(generic.UpdateView):
+class AthleteUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Athlete
     form_class = AthleteForm
     success_url = reverse_lazy("training:athlete-list")
 
 
-class AthleteDeleteView(generic.DeleteView):
+class AthleteDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Athlete
     success_url = reverse_lazy("training:athlete-list")
 
 
-class WorkoutPlanUpdateView(generic.UpdateView):
+class WorkoutPlanUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = WorkoutPlan
     form_class = WorkoutPlanForm
     success_url = reverse_lazy("training:workout-plan-list")
 
 
-class WorkoutPlanDeleteView(generic.DeleteView):
+class WorkoutPlanDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = WorkoutPlan
     success_url = reverse_lazy("training:workout-plan-list")
 
 
-class WorkoutUpdateView(generic.UpdateView):
+class WorkoutUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Workout
     form_class = WorkoutForm
     success_url = reverse_lazy("training:workout-list")
 
 
-class WorkoutDeleteView(generic.DeleteView):
+class WorkoutDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Workout
     success_url = reverse_lazy("training:workout-list")
+
+def user_login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect("training:index")
+    else:
+        form = AuthenticationForm()
+    return render(request, "training/login.html", {"form": form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect("training:index")
