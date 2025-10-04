@@ -1,0 +1,49 @@
+{% extends "training/base.html" %}
+
+{% block title %}Workout {{ workout.date }} - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Workout - {{ workout.date }}</h1>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Athlete:</strong>
+            <a href="{% url 'training:athlete-detail' pk=workout.athlete.pk %}">
+                {{ workout.athlete }}
+            </a>
+        </p>
+        <p><strong>Duration:</strong> {{ workout.duration_minutes }} minutes</p>
+        <p><strong>Status:</strong>
+            {% if workout.completed %}
+                <span class="badge bg-success">Completed</span>
+            {% else %}
+                <span class="badge bg-warning">Not completed</span>
+            {% endif %}
+        </p>
+        {% if workout.workout_plan %}
+        <p><strong>Workout Plan:</strong>
+            <a href="{% url 'training:workout-plan-detail' pk=workout.workout_plan.pk %}">
+                {{ workout.workout_plan.title }}
+            </a>
+        </p>
+        {% else %}
+        <p><strong>Workout Plan:</strong> No plan assigned</p>
+        {% endif %}
+        <hr>
+        <p><strong>Notes:</strong></p>
+        <p>{{ workout.notes|default:"No notes" }}</p>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'training:workout-update' pk=workout.pk %}" class="btn btn-warning">
+        Update
+    </a>
+    <a href="{% url 'training:workout-delete' pk=workout.pk %}" class="btn btn-danger">
+        Delete
+    </a>
+    <a href="{% url 'training:workout-list' %}" class="btn btn-secondary">
+        Back to list
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "training/base.html" %}
+
+{% block title %}Athletes - Fitness Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-running text-primary"></i> Athletes</h1>
+    <a href="{% url 'training:athlete-create' %}" class="btn btn-success">
+        <i class="fas fa-plus me-2"></i>Add Athlete
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text"
+                           name="name"
+                           class="form-control"
+                           placeholder="Search by name..."
+                           value="{{ request.GET.name }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if athlete_list %}
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-user me-2"></i>Name</th>
+                    <th><i class="fas fa-envelope me-2"></i>Email</th>
+                    <th><i class="fas fa-birthday-cake me-2"></i>Date of Birth</th>
+                    <th><i class="fas fa-user-tie me-2"></i>Trainer</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for athlete in athlete_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'training:athlete-detail' pk=athlete.pk %}" class="text-decoration-none fw-bold">
+                            {{ athlete.first_name }} {{ athlete.last_name }}
+                        </a>
+                    </td>
+                    <td>{{ athlete.email }}</td>
+                    <td>{{ athlete.date_of_birth }}</td>
+                    <td>
+                        <a href="{% url 'training:trainer-detail' pk=athlete.trainer.pk %}" class="badge bg-primary text-decoration-none">
+                            {{ athlete.trainer.username }}
+                        </a>
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'training:athlete-detail' pk=athlete.pk %}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'training:athlete-update' pk=athlete.pk %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'training:athlete-delete' pk=athlete.pk %}" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-3">
+    {% include "includes/pagination.html" with page_obj=page_obj %}
+</div>
+
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    No athletes found. <a href="{% url 'training:athlete-create' %}" class="alert-link">Add your first athlete!</a>
+</div>
+{% endif %}
+{% endblock %}

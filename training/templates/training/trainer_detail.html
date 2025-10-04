@@ -1,0 +1,35 @@
+{% extends "training/base.html" %}
+
+{% block title %}{{ trainer.username }} - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Trainer: {{ trainer.username }}</h1>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Specialization:</strong> {{ trainer.specialization }}</p>
+        <p><strong>Experience:</strong> {{ trainer.years_experience }} years</p>
+        <p><strong>Phone:</strong> {{ trainer.phone_number|default:"N/A" }}</p>
+        <p><strong>Email:</strong> {{ trainer.email }}</p>
+    </div>
+</div>
+
+<h3 class="mt-4">Athletes ({{ trainer.athletes.count }})</h3>
+{% if trainer.athletes.all %}
+<ul class="list-group">
+    {% for athlete in trainer.athletes.all %}
+    <li class="list-group-item">
+        <a href="{% url 'training:athlete-detail' pk=athlete.pk %}">
+            {{ athlete.first_name }} {{ athlete.last_name }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No athletes yet.</p>
+{% endif %}
+
+<a href="{% url 'training:trainer-list' %}" class="btn btn-secondary mt-3">
+    Back to list
+</a>
+{% endblock %}

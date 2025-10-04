@@ -1,0 +1,14 @@
+{% extends "training/base.html" %}
+
+{% block title %}Create New Workout - Fitness Portal{% endblock %}
+
+{% block content %}
+<h1>Create New Workout</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a href="{% url 'training:workout-list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
